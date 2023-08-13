@@ -59,10 +59,13 @@ lazy val coreSettings = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "mouse" % "1.2.1",
     "org.typelevel" %%% "kittens" % "3.0.0",
-    "org.typelevel" %%% "cats-collections-core" % "0.9.7"
+    "org.typelevel" %%% "cats-collections-core" % "0.9.7",
   ),
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "spire" % "0.18.0",
+
+    "org.typelevel" %%% "cats-parse" % "0.3.10",
+
     "org.scalacheck" %%% "scalacheck" % "1.17.0" % Test,
 
     "org.typelevel" %%% "discipline-core" % "1.5.1",
@@ -78,23 +81,35 @@ lazy val coreSettings = Seq(
 //    "org.scalameta" %%% "munit" % "1.0.0" % Test,
 //    "org.scalameta" %%% "munit-scalacheck" % "0.7.29" % Test,
   ),
+
+  Test / javaOptions ++= Seq("-Xmx4g", "-XX:+UseG1GC"),
+)
+
+lazy val coreJvmSettings = Seq(
+  Test / fork := true,
+  Test / javaOptions ++= Seq("-Xmx2g", "-XX:+UseG1GC"),
+)
+
+lazy val coreJsSettings = Seq(
+  tlVersionIntroduced ~= {
+    _ ++ List("2.12", "2.13").map(_ -> "1.0.2").toMap
+  }
+)
+
+lazy val coreNativeSettings = Seq(
+  tlVersionIntroduced := Map(
+    "2.12" -> "1.1.3",
+    "2.13" -> "1.1.3",
+    "3" -> "1.5.0"
+  )
 )
 
 lazy val core =
-//  crossProject(NativePlatform, JSPlatform, JVMPlatform)
-  crossProject(NativePlatform, JSPlatform)
+  crossProject(NativePlatform, JSPlatform, JVMPlatform)
+//  crossProject(NativePlatform, JSPlatform)
     .crossType(CrossType.Pure)
     .in(file("core"))
     .settings(coreSettings)
-    .jsSettings(
-      tlVersionIntroduced ~= {
-        _ ++ List("2.12", "2.13").map(_ -> "1.0.2").toMap
-      }
-    )
-    .nativeSettings(
-      tlVersionIntroduced := Map(
-        "2.12" -> "1.1.3",
-        "2.13" -> "1.1.3",
-        "3" -> "1.5.0"
-      )
-    )
+    .jvmSettings(coreJvmSettings)
+    .jsSettings(coreJsSettings)
+    .nativeSettings(coreNativeSettings)
