@@ -65,6 +65,7 @@ lazy val coreSettings = Seq(
     "org.typelevel" %%% "spire" % "0.18.0",
 
     "org.typelevel" %%% "cats-parse" % "0.3.10",
+    "org.typelevel" %%% "log4cats-core" % "2.6.0",
 
     "org.scalacheck" %%% "scalacheck" % "1.17.0" % Test,
 
