@@ -29,6 +29,8 @@ lazy val catsMtlVersion = "1.3.1"
 lazy val fs2Version = "3.8.0"
 //lazy val spec2Version = "4.20.2"
 lazy val spec2Version = "4.19.2"
+lazy val jawnVersion = "1.5.1"
+lazy val scalaTestVersion = "3.2.16"
 
 lazy val coreSettings = Seq(
   name := "catculus",
@@ -56,6 +58,10 @@ lazy val coreSettings = Seq(
     "co.fs2" %%% "fs2-scodec" % fs2Version,
     "co.fs2" %%% "fs2-io" % fs2Version,
   ),
+//  libraryDependencies ++= Seq(
+//    "org.typelevel" %%% "jawn-parser" % jawnVersion,
+//    "org.typelevel" %%% "jawn-ast" % jawnVersion,
+//  ),
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "mouse" % "1.2.1",
     "org.typelevel" %%% "kittens" % "3.0.0",
@@ -68,9 +74,9 @@ lazy val coreSettings = Seq(
 //    "org.typelevel" %%% "discipline-munit" % "1.0.9" % Test,
   ),
   libraryDependencies ++= Seq(
-    "org.scalatest" %%% "scalatest" % "3.2.16" % Test,
-    "org.scalatest" %%% "scalatest-funspec" % "3.2.16" % Test,
-    "org.scalatest" %%% "scalatest-wordspec" % "3.2.16" % Test,
+//    "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
+    "org.scalatest" %%% "scalatest-funspec" % scalaTestVersion % Test,
+    "org.scalatest" %%% "scalatest-wordspec" % scalaTestVersion % Test,
   ),
   libraryDependencies ++= Seq(
     "org.specs2" %%% "specs2-core" % spec2Version % Test,

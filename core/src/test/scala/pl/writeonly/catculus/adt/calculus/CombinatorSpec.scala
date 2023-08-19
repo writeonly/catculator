@@ -1,6 +1,6 @@
 package pl.writeonly.catculus.adt.calculus
 
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import pl.writeonly.catculus.TableDrivenPropertySpec
 import pl.writeonly.catculus.adt.calculus.Combinator._
 
 class CombinatorSpec extends TableDrivenPropertySpec {

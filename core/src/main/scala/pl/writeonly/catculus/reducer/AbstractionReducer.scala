@@ -1,7 +1,5 @@
 package pl.writeonly.catculus.reducer
 
-import cats.data.NonEmptyList
-import pl.writeonly.catculus.Extras._
 import pl.writeonly.catculus.adt.calculus.Combinator._
 import pl.writeonly.catculus.adt.calculus.Lambda
 import pl.writeonly.catculus.adt.calculus.Lambda._
@@ -12,7 +10,6 @@ object AbstractionReducer {
   def reduceAbstraction(l: Lambda): Lambda = l match {
     case Abs(p, b) => reduceAbstraction1(p, b)
     case App(f, g) => App(reduceAbstraction(f), reduceAbstraction(g))
-    case Apps(fs)  => reduceAbstraction(reduceApps(fs))
     case lambda    => lambda
   }
 
@@ -21,19 +18,17 @@ object AbstractionReducer {
     case Var(n1)                  => reduceVar(p0, n1)
     case Abs(p1, b1)              => reduceAbs(p0, p1, b1)
     case App(f, g)                => wrapAppAppS(reduceAbstraction1(p0, f), reduceAbstraction1(p0, g))
-    case Apps(fs)                 => reduceAbstraction1(p0, reduceApps(fs))
     case lambda                   => lambda
   }
 
-  private def reduceApps(l: NonEmptyList[Lambda]): Lambda = foldNonEmpty(l)(App)
-
-  private def reduceAbs(p0: String, p1: String, b1: Lambda): Lambda = {
-    val c = reduceAbstraction1(p1, b1)
-    if (p0 === p1) wrapAppK(c) else reduceAbstraction1(p0, c)
-  }
-
-  private def reduceVar(n0: String, n1: String): Lambda  =
+  private def reduceVar(n0: String, n1: String): Lambda =
     if (n0 === n1) Com(I) else wrapAppK(Var(n1))
+
+  private def reduceAbs(p0: String, p1: String, b1: Lambda): Lambda =
+    reduceAbs1(p0, p1, reduceAbstraction1(p1, b1))
+
+  private def reduceAbs1(p0: String, p1: String, c: Lambda): Lambda =
+    if (p0 === p1) wrapAppK(c) else reduceAbstraction1(p0, c)
 
   private def wrapAppK(c: Lambda): Lambda = App(Com(K), c)
 
