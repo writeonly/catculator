@@ -2,6 +2,8 @@ package pl.writeonly.catculus.adt.calculus
 
 import cats.data.NonEmptyList
 import pl.writeonly.catculus.Extras.fix
+import pl.writeonly.catculus.adt.tree.BinaryTree
+import pl.writeonly.catculus.adt.tree.BinaryTree._
 import spire.math.Natural
 
 object Lambda {
@@ -29,6 +31,11 @@ object Lambda {
     case CharStr(s)     => s"\"$s\""
     case NatNum(n)      => n.toString
     case IntNum(s, n)   => Sign.generate(s) + n.toString
+  }
+
+  def toCombinators(l: Lambda): BinaryTree[Combinator] = l match {
+    case Com(c) => Leaf(c)
+    case App(f, x) => Node(toCombinators(f), toCombinators(x))
   }
 
 //  def apps1(head: Lambda, tail: List[Lambda]): Lambda = Apps(NonEmptyList(head, tail))

@@ -67,7 +67,6 @@ class LambdaSpec extends TableDrivenPropertySpec {
     }
   }
 
-
   it should "compile advanced Lambda" in {
     forAll(advancedLambda) { (sugar, _, combinators) =>
       LambdaParser.parse(sugar).map(reduceSugar).map(reduceAbstraction).map(generate).value shouldBe combinators
