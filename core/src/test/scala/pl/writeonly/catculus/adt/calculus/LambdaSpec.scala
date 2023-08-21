@@ -1,54 +1,50 @@
 package pl.writeonly.catculus.adt.calculus
 
-import cats.parse.Parser
-import org.specs2.matcher.DataTables
-import org.specs2.mutable.Specification
-import pl.writeonly.catculus.reducer.AbstractionReducer._
-import pl.writeonly.catculus.adt.calculus.Combinator._
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.prop.TableFor2
 import pl.writeonly.catculus.adt.calculus.Lambda._
-import pl.writeonly.catculus.parsers.LambdaParser._
+import pl.writeonly.catculus.parsers.LambdaParser
+import pl.writeonly.catculus.reducer.AbstractionReducer.reduceAbstraction
 
-class LambdaSpec extends Specification with DataTables {
+class LambdaSpec extends TableDrivenPropertySpec {
 
-  val generateAndParse: Lambda => Either[Parser.Error, Lambda] = parse compose generate
+  val basicLambda: TableFor2[String, Lambda] = Table(
+    ("code", "ast"),
+    ("a", Var("a")),
+    ("\\a a", Abs("a", Var("a"))),
+    ("`a a", App(Var("a"), Var("a"))),
+    ("\\a `a a", Abs("a", App(Var("a"), Var("a")))),
+    ("\\a \\b `a b", Abs("a", Abs("b", App(Var("a"), Var("b"))))),
+  )
 
-  def parseAndReduceAbstraction(code : String) =
-    parse(code).map(reduceAbstraction)
+  val advancedLambda: TableFor2[String, String] =
+    Table(
+      ("lambda", "combinators"),
+      ("\\a a", "I"),
+      ("\\a (a a)", "``S I I"),
+      ("\\a \\a a", "`K I"),
+      ("\\a \\b (a b)", "``S ``S `K S ``S `K K I `K I"),
+      ("\\a \\b (b a)", "``S `K `S I ``S `K K I"),
+      ("(a a)", "`a a"),
+      ("((a a))", "`a a"),
+      ("(a b c)", "``a b c"),
+    )
 
-  "A Lambda" should {
-    "parse" in {
-      "ast" | "code" |>
-        Var("a")                                                 ! "a"               |
-        Abs("a", Var("a"))                                       ! "\\a a"           |
-        Abs("a", App(Var("a"), Var("a")))                        ! "\\a `a a"        |
-        Abs("a", apps(Var("a"), Var("a")))                       ! "\\a (a a)"       |
-        App(Abs("a", Var("a")), Var("a"))                        ! "`\\a a a"        |
-        apps(Abs("a", Var("a")), Var("a"))                       ! "(\\a a a)"       |
-        App(Abs("a", App(Var("a"), Var("a"))), Var("a"))         ! "`\\a `a a a"     |
-        apps(Abs("a", apps(Var("a"), Var("a"))))                 ! "(\\a (a a))"     |
-        apps(apps(Abs("a", apps(Var("a"), Var("a")))), Var("a")) ! "((\\a (a a)) a)" |
-        apps(Abs("a", apps(Var("a"), Var("a"))), Var("a"))       ! "(\\a (a a) a)"   |
-        { (ast, code) =>
-          parse(code) must beRight(ast)
-          generate(ast) must === (code)
-        }
+  it should "parse basic Lambda and save ATS" in {
+    forAll(basicLambda) { (code: String, ast: Lambda) =>
+      LambdaParser.parse(code).value shouldBe ast
     }
+  }
 
-    "reduce abstraction" in {
-      "combinator" | "lambda code" |>
-        Com(I)                                                                                                             ! "\\a a"         |
-        App(App(Com(S),Com(I)),Com(I))                                                                                     ! "\\a `a a"      |
-        App(App(Com(S),Com(I)),Com(I))                                                                                     ! "\\a (a a)"     |
-        App(App(Com(S),App(Com(K),Com(K))),Com(I))                                                                         ! "\\a \\b a"     |
-        App(Com(K),Com(I))                                                                                                 ! "\\a \\b b"     |
-        App(App(Com(S),App(App(Com(S),App(Com(K),Com(S))),App(App(Com(S),App(Com(K),Com(K))),Com(I)))),App(Com(K),Com(I))) ! "\\a \\b `a b"  |
-        App(App(Com(S),App(App(Com(S),App(Com(K),Com(S))),App(App(Com(S),App(Com(K),Com(K))),Com(I)))),App(Com(K),Com(I))) ! "\\a \\b (a b)" |
-        App(App(Com(S),App(Com(K),App(Com(S),Com(I)))),App(App(Com(S),App(Com(K),Com(K))),Com(I)))                         ! "\\a \\b `b a"  |
-        App(App(Com(S),App(Com(K),App(Com(S),Com(I)))),App(App(Com(S),App(Com(K),Com(K))),Com(I)))                         ! "\\a \\b (b a)" |
-        { (combinator, code) =>
-          parseAndReduceAbstraction(code) must beRight(combinator)
-        }
+  it should "parse advanced Lambda" in {
+    forAll(advancedLambda) { (sugar: String, _: String) =>
+      LambdaParser.parse(sugar).map(generate).value shouldBe sugar
     }
+  }
 
+  it should "compile advanced Lambda" in {
+    forAll(advancedLambda) { (sugar: String, combinators: String) =>
+      LambdaParser.parse(sugar).map(reduceAbstraction).map(generate).value shouldBe combinators
+    }
   }
 }

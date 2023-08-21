@@ -12,7 +12,7 @@ object AbstractionReducer {
   def reduceAbstraction(l: Lambda): Lambda = l match {
     case Abs(p, b) => reduceAbstraction1(p, b)
     case App(f, g) => App(reduceAbstraction(f), reduceAbstraction(g))
-    case Apps(fs)  => Apps(fs.map(reduceAbstraction))
+    case Apps(fs)  => reduceAbstraction(reduceApps(fs))
     case lambda    => lambda
   }
 

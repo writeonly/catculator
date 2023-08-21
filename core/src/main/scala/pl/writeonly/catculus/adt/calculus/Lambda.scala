@@ -13,8 +13,6 @@ object Lambda {
     case Apps(fs)  => s"(${fs.map(generate).toList.mkString(" ")})"
   }
 
-  def apps(head: Lambda, tail: Lambda*): Lambda = apps1(head, tail.toList)
-
   def apps1(head: Lambda, tail: List[Lambda]): Lambda = Apps(NonEmptyList(head, tail))
 
   //I know it is crazy, but I wanted to check it is possible

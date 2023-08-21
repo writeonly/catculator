@@ -62,22 +62,27 @@ lazy val coreSettings = Seq(
     "org.typelevel" %%% "cats-collections-core" % "0.9.7",
   ),
   libraryDependencies ++= Seq(
+    "org.typelevel" %%% "discipline-core" % "1.5.1",
+    "org.typelevel" %%% "discipline-scalatest" % "2.2.0" % Test,
+    "org.typelevel" %%% "discipline-specs2" % "1.4.0" % Test,
+//    "org.typelevel" %%% "discipline-munit" % "1.0.9" % Test,
+  ),
+  libraryDependencies ++= Seq(
+    "org.scalatest" %%% "scalatest" % "3.2.16" % Test,
+    "org.scalatest" %%% "scalatest-funspec" % "3.2.16" % Test,
+    "org.scalatest" %%% "scalatest-wordspec" % "3.2.16" % Test,
+  ),
+  libraryDependencies ++= Seq(
+    "org.specs2" %%% "specs2-core" % spec2Version % Test,
+    "org.specs2" %%% "specs2-scalacheck" % spec2Version % Test
+  ),
+  libraryDependencies ++= Seq(
     "org.typelevel" %%% "spire" % "0.18.0",
 
     "org.typelevel" %%% "cats-parse" % "0.3.10",
     "org.typelevel" %%% "log4cats-core" % "2.6.0",
 
     "org.scalacheck" %%% "scalacheck" % "1.17.0" % Test,
-
-    "org.typelevel" %%% "discipline-core" % "1.5.1",
-    "org.typelevel" %%% "discipline-scalatest" % "2.2.0" % Test,
-    "org.typelevel" %%% "discipline-specs2" % "1.4.0" % Test,
-//    "org.typelevel" %%% "discipline-munit" % "1.0.9" % Test,
-
-    "org.scalatest" %%% "scalatest" % "3.2.16" % Test,
-
-    "org.specs2" %%% "specs2-core" % spec2Version % Test,
-    "org.specs2" %% "specs2-scalacheck" % spec2Version % Test
 
 //    "org.scalameta" %%% "munit" % "1.0.0" % Test,
 //    "org.scalameta" %%% "munit-scalacheck" % "0.7.29" % Test,
