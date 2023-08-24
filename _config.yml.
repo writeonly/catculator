@@ -1,2 +1,22 @@
-# theme: minima
-remote_theme             : helvm/minima
+theme: minima
+# remote_theme             : helvm/minima
+
+minima:
+#  skin: solarized-dark
+  skin: dark
+#  date_format: "%b %-d, %Y"
+  social_links:
+    rss                  : rss
+    github               : helvm
+    linkedin             : writeonly-pl
+    facebook             : WriteOnlyPL
+    instagram            : degustujacaistota
+    twitter              : TheKamilAdam
+    devto                : KamilAdam
+#    dribbble: jekyll
+#    flickr: jekyll
+#    pinterest: jekyll
+#    telegram: jekyll
+#    googleplus: +jekyll
+#    microdotblog: jekyll
+#    keybase: jekyll
