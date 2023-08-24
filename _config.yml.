@@ -7,7 +7,7 @@ minima:
 #  date_format: "%b %-d, %Y"
   social_links:
     rss                  : rss
-    github               : helvm
+    github               : writeonly/catculator
     linkedin             : writeonly-pl
     facebook             : WriteOnlyPL
     instagram            : degustujacaistota
