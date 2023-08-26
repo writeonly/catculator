@@ -1,4 +1,4 @@
-package pl.writeonly.catculus
+package pl.writeonly.catculator
 
 import cats.data.NonEmptyList
 

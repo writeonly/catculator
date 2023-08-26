@@ -1,8 +1,8 @@
-package pl.writeonly.catculus.reducer
+package pl.writeonly.catculator.reducer
 
-import pl.writeonly.catculus.adt.calculus.Combinator._
-import pl.writeonly.catculus.adt.calculus.Lambda
-import pl.writeonly.catculus.adt.calculus.Lambda._
+import pl.writeonly.catculator.adt.calculus.Combinator._
+import pl.writeonly.catculator.adt.calculus.Lambda
+import pl.writeonly.catculator.adt.calculus.Lambda._
 import spire.implicits.eqOps
 
 object AbstractionReducer {

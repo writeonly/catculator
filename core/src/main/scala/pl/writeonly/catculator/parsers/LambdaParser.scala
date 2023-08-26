@@ -1,11 +1,11 @@
-package pl.writeonly.catculus.parsers
+package pl.writeonly.catculator.parsers
 
 import cats.parse.Numbers.digits
 import cats.parse.strings.Json.delimited.{parser => jsonString}
 import cats.parse.{Parser0, Parser => P}
-import pl.writeonly.catculus.adt.calculus.Lambda._
-import pl.writeonly.catculus.adt.calculus.Sign._
-import pl.writeonly.catculus.adt.calculus._
+import pl.writeonly.catculator.adt.calculus.Lambda._
+import pl.writeonly.catculator.adt.calculus.Sign._
+import pl.writeonly.catculator.adt.calculus._
 
 object LambdaParser {
   val identifierStart: P[Char] = P.charWhere(c => c.isLetter || "_:;,.".contains(c))

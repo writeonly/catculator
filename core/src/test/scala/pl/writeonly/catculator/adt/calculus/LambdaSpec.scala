@@ -1,11 +1,11 @@
-package pl.writeonly.catculus.adt.calculus
+package pl.writeonly.catculator.adt.calculus
 
 import org.scalatest.prop.TableFor3
-import pl.writeonly.catculus.TableDrivenPropertySpec
-import pl.writeonly.catculus.adt.calculus.Lambda._
-import pl.writeonly.catculus.parsers.LambdaParser
-import pl.writeonly.catculus.reducer.AbstractionReducer.reduceAbstraction
-import pl.writeonly.catculus.reducer.SugarReducer.reduceSugar
+import pl.writeonly.catculator.TableDrivenPropertySpec
+import pl.writeonly.catculator.adt.calculus.Lambda._
+import pl.writeonly.catculator.parsers.LambdaParser
+import pl.writeonly.catculator.reducer.AbstractionReducer.reduceAbstraction
+import pl.writeonly.catculator.reducer.SugarReducer.reduceSugar
 
 class LambdaSpec extends TableDrivenPropertySpec {
 

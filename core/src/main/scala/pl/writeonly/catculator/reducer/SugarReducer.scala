@@ -1,10 +1,10 @@
-package pl.writeonly.catculus.reducer
+package pl.writeonly.catculator.reducer
 
 import cats.data.NonEmptyList
-import pl.writeonly.catculus.Extras.foldNonEmpty
-import pl.writeonly.catculus.adt.calculus.Lambda._
-import pl.writeonly.catculus.adt.calculus.Sign._
-import pl.writeonly.catculus.adt.calculus._
+import pl.writeonly.catculator.Extras.foldNonEmpty
+import pl.writeonly.catculator.adt.calculus.Lambda._
+import pl.writeonly.catculator.adt.calculus.Sign._
+import pl.writeonly.catculator.adt.calculus._
 import spire.math.Natural.End
 import spire.math._
 
