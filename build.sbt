@@ -110,13 +110,29 @@ val core =
     .jsSettings(coreJsSettings)
     .nativeSettings(coreNativeSettings)
 
+val webappSettings = Seq(
+  scalaJSUseMainModuleInitializer := true,
+//  scalaJSMainModuleInitializer := Some("pl.twoj_projekt.Main().main()")
+  Compile / mainClass := Some("pl.writeonly.catculator.webapp.Main"),
+  Runtime / mainClass := Some("pl.writeonly.catculator.webapp.Main"),
+//  jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
+  libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.4.0",
+)
+
+val webapp =
+  crossProject(JSPlatform)
+    .crossType(CrossType.Pure)
+    .in(file("catculator-webapp"))
+    .dependsOn(core)
+    .settings(webappSettings)
+
 val rootSettings = Seq(
   name := "catculator",
 )
 
 val root =
   tlCrossRootProject
-    .aggregate(core)
+    .aggregate(core, webapp)
     .settings(rootSettings)
 
 addCommandAlias("scalafixWTF", "scalafixEnable; scalafixAll")
@@ -124,6 +140,7 @@ addCommandAlias("scalafmtWTF", "scalafmtSbt; scalafmtAll")
 addCommandAlias("compileAll", "clean; compile; Test/compile")
 addCommandAlias("testAll", "coreJS/test; coreNative/test")
 addCommandAlias("coverageAll", "coverage; coreJVM/test")
+addCommandAlias("aaa", "webappJS/fastLinkJS")
 addCommandAlias("all", "scalafixWTF; scalafmtAll; compileAll; testAll; coverageAll; coverageReport")
 //addCommandAlias("all", "scalafmtAll; compileAll; testAll; coverageAll; coverageReport")
 //addCommandAlias("all", "scalafmtAll; compileAll; testAll")
