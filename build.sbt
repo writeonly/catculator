@@ -1,8 +1,6 @@
 ThisBuild / tlBaseVersion := "1.6"
 
-ThisBuild / developers := List(
-  tlGitHubDev("kamil-adam", "Kamil Adam")
-)
+ThisBuild / developers := List(tlGitHubDev("kamil-adam", "Kamil Adam"))
 
 //ThisBuild / crossScalaVersions := Seq("2.13.11", "3.2.0")
 //ThisBuild / crossScalaVersions := Seq("2.13.11")
@@ -26,10 +24,11 @@ val spec2Version = "4.19.2"
 val jawnVersion = "1.5.1"
 val scalaTestVersion = "3.2.16"
 
+val coreJavaOptions = Seq("-Xmx4g", "-XX:+UseG1GC")
+
 lazy val coreSettings = Seq(
   name := "catculus",
   moduleName := "catculus-core",
-
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats-kernel" % catsVersion,
     "org.typelevel" %%% "cats-core" % catsVersion,
@@ -41,11 +40,11 @@ lazy val coreSettings = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats-effect" % catsEffectVersion,
     "org.typelevel" %%% "cats-effect-kernel" % catsEffectVersion,
-    "org.typelevel" %%% "cats-effect-laws" % catsEffectVersion % Test
+    "org.typelevel" %%% "cats-effect-laws" % catsEffectVersion % Test,
   ),
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats-mtl" % catsMtlVersion,
-    "org.typelevel" %%% "cats-mtl-laws" % catsMtlVersion % Test
+    "org.typelevel" %%% "cats-mtl-laws" % catsMtlVersion % Test,
   ),
   libraryDependencies ++= Seq(
     "co.fs2" %%% "fs2-core" % fs2Version,
@@ -74,26 +73,23 @@ lazy val coreSettings = Seq(
   ),
   libraryDependencies ++= Seq(
     "org.specs2" %%% "specs2-core" % spec2Version % Test,
-    "org.specs2" %%% "specs2-scalacheck" % spec2Version % Test
+    "org.specs2" %%% "specs2-scalacheck" % spec2Version % Test,
   ),
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "spire" % "0.18.0",
-
     "org.typelevel" %%% "cats-parse" % "0.3.10",
     "org.typelevel" %%% "log4cats-core" % "2.6.0",
-
     "org.scalacheck" %%% "scalacheck" % "1.17.0" % Test,
 
     //    "org.scalameta" %%% "munit" % "1.0.0" % Test,
     //    "org.scalameta" %%% "munit-scalacheck" % "0.7.29" % Test,
   ),
-
-  Test / javaOptions ++= Seq("-Xmx4g", "-XX:+UseG1GC"),
+  Test / javaOptions ++= coreJavaOptions,
 )
 
 val coreJvmSettings = Seq(
   Test / fork := true,
-  Test / javaOptions ++= Seq("-Xmx2g", "-XX:+UseG1GC"),
+  Test / javaOptions ++= coreJavaOptions,
 )
 
 val coreJsSettings = Seq(
@@ -118,14 +114,20 @@ val core =
     .jsSettings(coreJsSettings)
     .nativeSettings(coreNativeSettings)
 
+val rootSettings = Seq(
+  name := "catculus",
+)
+
 val root =
   tlCrossRootProject
     .aggregate(core)
-    .settings(
-      name := "catculus"
-    )
+    .settings(rootSettings)
 
-addCommandAlias("compileAll", "clean; compile; Test/compile")
+addCommandAlias("scalafmtCat", "scalafmtSbt; scalafmtAll")
+addCommandAlias("compileCat", "clean; compile; Test/compile")
 addCommandAlias("coverageJS", "coverage; coreJS/test")
-addCommandAlias("coverageAll", "coverage; coreJS/test; coreJVM/test")
+addCommandAlias("coverageCat", "coverage; coreJS/test; coreJVM/test")
 //coverageReport
+
+// sbt scalafmtCat && sbt compileCat && sbt coverageCat && sbt coverageReport
+// sbt scalafmtAll && sbt compileCat && sbt coverageCat && sbt coverageReport
