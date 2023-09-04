@@ -4,8 +4,9 @@ ThisBuild / developers := List(
   tlGitHubDev("kamil-adam", "Kamil Adam")
 )
 
-//ThisBuild / crossScalaVersions := Seq("2.13.11", "3.2.1")
-ThisBuild / crossScalaVersions := Seq("2.13.11")
+//ThisBuild / crossScalaVersions := Seq("2.13.11", "3.2.0")
+//ThisBuild / crossScalaVersions := Seq("2.13.11")
+ThisBuild / crossScalaVersions := Seq("3.3.0")
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.1.5")
 
 ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
@@ -111,7 +112,7 @@ val coreNativeSettings = Seq(
 val core =
   crossProject(NativePlatform, JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
-    .in(file("core"))
+    .in(file("calculator-core"))
     .settings(coreSettings)
     .jvmSettings(coreJvmSettings)
     .jsSettings(coreJsSettings)
@@ -123,3 +124,8 @@ val root =
     .settings(
       name := "catculus"
     )
+
+addCommandAlias("compileAll", "clean; compile; Test/compile")
+addCommandAlias("coverageJS", "coverage; coreJS/test")
+addCommandAlias("coverageAll", "coverage; coreJS/test; coreJVM/test")
+//coverageReport
