@@ -1,4 +1,4 @@
-package pl.writeonly.catculator.adt.tree
+package pl.writeonly.catculator.core.adt.tree
 
 object BinaryTree {
 

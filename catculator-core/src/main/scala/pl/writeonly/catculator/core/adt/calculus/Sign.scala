@@ -1,4 +1,4 @@
-package pl.writeonly.catculator.adt.calculus
+package pl.writeonly.catculator.core.adt.calculus
 
 object Sign {
 

@@ -1,6 +1,6 @@
-package pl.writeonly.catculator.adt.calculus
+package pl.writeonly.catculator.core.adt.calculus
 
-import pl.writeonly.catculator.adt.tree._
+import pl.writeonly.catculator.core.adt.tree._
 
 object Combinator {
 

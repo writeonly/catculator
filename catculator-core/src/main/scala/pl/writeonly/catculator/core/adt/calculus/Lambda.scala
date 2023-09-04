@@ -1,7 +1,7 @@
-package pl.writeonly.catculator.adt.calculus
+package pl.writeonly.catculator.core.adt.calculus
 
 import cats.data.NonEmptyList
-import pl.writeonly.catculator.Extras.fix
+import pl.writeonly.catculator.core.Extras.fix
 import spire.math.Natural
 
 object Lambda {

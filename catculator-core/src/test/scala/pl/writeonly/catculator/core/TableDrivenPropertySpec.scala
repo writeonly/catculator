@@ -1,4 +1,4 @@
-package pl.writeonly.catculator
+package pl.writeonly.catculator.core
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
