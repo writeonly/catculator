@@ -129,5 +129,5 @@ addCommandAlias("coverageJS", "coverage; coreJS/test")
 addCommandAlias("coverageCat", "coverage; coreJS/test; coreJVM/test")
 //coverageReport
 
-// sbt scalafmtCat && sbt compileCat && sbt coverageCat && sbt coverageReport
-// sbt scalafmtAll && sbt compileCat && sbt coverageCat && sbt coverageReport
+// sbt scalafixAll && scalafmtCat && sbt compileCat && sbt coverageCat && sbt coverageReport
+// sbt scalafixAll && scalafmtAll && sbt compileCat && sbt coverageCat && sbt coverageReport
