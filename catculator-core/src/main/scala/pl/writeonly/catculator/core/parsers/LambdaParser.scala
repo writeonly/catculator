@@ -1,28 +1,35 @@
 package pl.writeonly.catculator.core.parsers
 
 import cats.parse.Numbers.digits
+import cats.parse.Parser0
 import cats.parse.strings.Json.delimited.{parser => jsonString}
-import cats.parse.{Parser0, Parser => P}
+import cats.parse.{Parser => P}
+import cats.syntax.all._
 import pl.writeonly.catculator.core.adt.calculus
+import pl.writeonly.catculator.core.adt.calculus.Lambda
 import pl.writeonly.catculator.core.adt.calculus.Lambda._
 import pl.writeonly.catculator.core.adt.calculus.Sign
 import pl.writeonly.catculator.core.adt.calculus.Sign._
 
 object LambdaParser {
-  val identifierStart: P[Char] = P.charWhere(c => c.isLetter || "_:;,.".contains(c))
-//  val identifierStart: P[Char] = P.charWhere(_.isLetter)
-  val identifierContinue: P[Char] = P.charWhere(c => c.isLetterOrDigit || c == '_')
+  private val identifierStart: P[Char] = P.charWhere { c =>
+    c.isLetter || "_:;,.".contains(c)
+  }
+  private val identifierContinue: P[Char] = P.charWhere { c =>
+    c.isLetterOrDigit || c === '_'
+  }
 
-  val whitespace: P[Char] = P.charWhere(Character.isWhitespace)
-  val whitespaces: Parser0[String] = whitespace.rep0.string
+  private val whitespace: P[Char] = P.charWhere(Character.isWhitespace)
+  private val whitespaces: Parser0[String] = whitespace.rep0.string
 
   def symbol[A](a: P[A]): P[A] = a <* whitespaces
   def charSymbol(c: Char): P[Unit] = symbol(P.char(c))
 
-//  val identifier: P[String] = symbol((identifierChar ~ identifierChar.rep0).string)
-  val identifier: P[String] = symbol((identifierStart ~ identifierContinue.rep0).string)
+  val identifier: P[String] =
+    symbol((identifierStart ~ identifierContinue.rep0).string)
 
-  val lambda: P[calculus.Lambda] = P.defer(
+  // format: off
+  val lambda: P[Lambda] = P.defer(
         variable
       | abstraction
       | application
@@ -33,35 +40,45 @@ object LambdaParser {
       | natNum
       | intNum
   )
+  // format: on
 
-  val variable: P[calculus.Lambda] = identifier.map(Var)
+  val variable: P[Lambda] = identifier.map(Var.apply)
 
-  val abstraction: P[calculus.Lambda] = (charSymbol('\\') *> identifier ~ lambda).map(Abs.tupled)
+  val abstraction: P[Lambda] = (charSymbol('\\') *> identifier ~ lambda)
+    .map(Abs.apply)
 
-  val application: P[calculus.Lambda] = (charSymbol('`') *> lambda ~ lambda).map(App.tupled)
+  val application: P[Lambda] = (charSymbol('`') *> lambda ~ lambda)
+    .map(App.apply)
 
-  val mautiApplicationChildren: P[calculus.Lambda] = (lambda ~ lambda.rep0).map((multi1 _).tupled)
+  val mautiApplicationChildren: P[Lambda] = (lambda ~ lambda.rep0)
+    .map((multi1 _).tupled)
 
-  val multiApplication: P[calculus.Lambda] = charSymbol('(') *> mautiApplicationChildren <* charSymbol(')')
+  val multiApplication: P[Lambda] =
+    charSymbol('(') *> mautiApplicationChildren <* charSymbol(')')
 
-  val localScopeChildren: P[calculus.Lambda] = (lambda ~ lambda.rep0).map((local1 _).tupled)
+  val localScopeChildren: P[Lambda] = (lambda ~ lambda.rep0)
+    .map((local1 _).tupled)
 
-  val localScope: P[calculus.Lambda] = charSymbol('{') *> localScopeChildren <* charSymbol('}')
+  val localScope: P[Lambda] = charSymbol('{') *> localScopeChildren <*
+    charSymbol('}')
 
-  val nilList: P[calculus.Lambda] = charSymbol('[') *> lambda.rep0.map(NilList) <* charSymbol(']')
+  val nilList: P[Lambda] = charSymbol('[') *> lambda.rep0.map(NilList.apply) <*
+    charSymbol(']')
 
-  val charStr: P[calculus.Lambda] = jsonString.map(CharStr)
+  val charStr: P[Lambda] = jsonString.map(CharStr.apply)
 
-  val natNum: P[calculus.Lambda] = digits.map(natNumFromString)
+  val natNum: P[Lambda] = digits.map(natNumFromString)
 
-  val sign: P[Sign] = P.charIn("+-").map {
-    case '+' => Plus
-    case '-' => Minus
-  }
+  val sign: P[Sign] = P
+    .charIn("+-")
+    .map {
+      case '+' => Plus
+      case '-' => Minus
+    }
 
-  val intNum: P[calculus.Lambda] = (sign ~ digits).map((intNumFromString _).tupled)
+  val intNum: P[Lambda] = (sign ~ digits).map((intNumFromString _).tupled)
 
-  val lambdaEnd: P[calculus.Lambda] = lambda <* P.end
+  val lambdaEnd: P[Lambda] = lambda <* P.end
 
-  val parse: String => Either[P.Error, calculus.Lambda] = lambdaEnd.parseAll
+  val parse: String => Either[P.Error, Lambda] = lambdaEnd.parseAll
 }

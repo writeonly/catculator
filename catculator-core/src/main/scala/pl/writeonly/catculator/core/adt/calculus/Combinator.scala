@@ -15,9 +15,9 @@ object Combinator {
 
   def generateC(c: Combinator): String = c.toString
 
-  final case object S extends Combinator
-  final case object K extends Combinator
-  final case object I extends Combinator
+  case object S extends Combinator
+  case object K extends Combinator
+  case object I extends Combinator
 }
 
 sealed trait Combinator

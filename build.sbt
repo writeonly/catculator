@@ -2,9 +2,7 @@ ThisBuild / tlBaseVersion := "1.6"
 
 ThisBuild / developers := List(tlGitHubDev("kamil-adam", "Kamil Adam"))
 
-//ThisBuild / crossScalaVersions := Seq("2.13.11", "3.3.0")
-ThisBuild / crossScalaVersions := Seq("2.13.11")
-//ThisBuild / crossScalaVersions := Seq("3.3.0")
+ThisBuild / crossScalaVersions := Seq("3.3.0")
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.1.5")
 
 ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
@@ -95,14 +93,21 @@ val coreJvmSettings = Seq(
 val coreJsSettings = Seq(
   tlVersionIntroduced ~= {
     _ ++ List("2.13").map(_ -> "1.0.2").toMap
-  }
+  },
+  scalaJSLinkerConfig ~= {
+    _
+      .withModuleKind(ModuleKind.ESModule)
+//      .withModuleSplitStyle(ModuleSplitStyle.SmallModulesFor(List("livechart")))
+  },
+
 )
 
 val coreNativeSettings = Seq(
   tlVersionIntroduced := Map(
     "2.13" -> "1.1.3",
     "3" -> "1.5.0"
-  )
+  ),
+  Test / javaOptions ++= coreJavaOptions,
 )
 
 val core =
@@ -123,11 +128,15 @@ val root =
     .aggregate(core)
     .settings(rootSettings)
 
-addCommandAlias("scalafmtCat", "scalafmtSbt; scalafmtAll")
-addCommandAlias("compileCat", "clean; compile; Test/compile")
-addCommandAlias("coverageJS", "coverage; coreJS/test")
-addCommandAlias("coverageCat", "coverage; coreJS/test; coreJVM/test")
+addCommandAlias("scalafixWTF", "scalafixEnable; scalafixAll")
+addCommandAlias("scalafmtWTF", "scalafmtSbt; scalafmtAll")
+addCommandAlias("compileAll", "clean; compile; Test/compile")
+addCommandAlias("testAll", "coreJS/test; coreNative/test")
+addCommandAlias("coverageAll", "coverage; coreJVM/test")
+addCommandAlias("all", "scalafixWTF; scalafmtAll; compileAll; testAll; coverageAll; coverageReport")
+//addCommandAlias("all", "scalafmtAll; compileAll; testAll; coverageAll; coverageReport")
+//addCommandAlias("all", "scalafmtAll; compileAll; testAll")
 //coverageReport
 
-// sbt scalafixAll && scalafmtCat && sbt compileCat && sbt coverageCat && sbt coverageReport
-// sbt scalafixAll && scalafmtAll && sbt compileCat && sbt coverageCat && sbt coverageReport
+// sbt scalafixAll && scalafmtWTF && sbt compileAll && sbt testAll && sbt coverageAll && sbt coverageReport
+// sbt scalafixAll && scalafmtAll && sbt compileAll && sbt testAll && sbt coverageAll && sbt coverageReport
