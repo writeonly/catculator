@@ -22,11 +22,9 @@ val spec2Version = "4.19.2"
 val jawnVersion = "1.5.1"
 val scalaTestVersion = "3.2.16"
 
-val coreJavaOptions = Seq("-Xmx4g", "-XX:+UseG1GC")
-
 lazy val coreSettings = Seq(
-  name := "catculus",
-  moduleName := "catculus-core",
+  name := "catculator",
+  moduleName := "catculator-core",
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats-kernel" % catsVersion,
     "org.typelevel" %%% "cats-core" % catsVersion,
@@ -82,18 +80,13 @@ lazy val coreSettings = Seq(
     //    "org.scalameta" %%% "munit" % "1.0.0" % Test,
     //    "org.scalameta" %%% "munit-scalacheck" % "0.7.29" % Test,
   ),
-  Test / javaOptions ++= coreJavaOptions,
 )
 
 val coreJvmSettings = Seq(
   Test / fork := true,
-  Test / javaOptions ++= coreJavaOptions,
 )
 
 val coreJsSettings = Seq(
-  tlVersionIntroduced ~= {
-    _ ++ List("2.13").map(_ -> "1.0.2").toMap
-  },
   scalaJSLinkerConfig ~= {
     _
       .withModuleKind(ModuleKind.ESModule)
@@ -104,10 +97,8 @@ val coreJsSettings = Seq(
 
 val coreNativeSettings = Seq(
   tlVersionIntroduced := Map(
-    "2.13" -> "1.1.3",
-    "3" -> "1.5.0"
+    "3" -> "1.5.0",
   ),
-  Test / javaOptions ++= coreJavaOptions,
 )
 
 val core =
@@ -120,7 +111,7 @@ val core =
     .nativeSettings(coreNativeSettings)
 
 val rootSettings = Seq(
-  name := "catculus",
+  name := "catculator",
 )
 
 val root =
