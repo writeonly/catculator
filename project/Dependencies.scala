@@ -14,6 +14,7 @@ object Dependencies {
   private val jawnVersion = "1.5.1"
   private val scalaTestVersion = "3.2.16"
   private val spec2Version = "4.19.2"
+  private val scalaMockVersion = "5.2.0"
 
   // Udash
   val udashVersion = "0.9.0"
@@ -80,4 +81,50 @@ object Dependencies {
     "org.typelevel" %%% "log4cats-core" % "2.6.0",
     "org.scalacheck" %%% "scalacheck" % "1.17.0" % Test,
   ))
+
+  // Dependencies for both frontend and backend
+  // Those have to be cross-compilable
+  val crossDeps = Def.setting(Seq(
+    "io.udash" %%% "udash-rpc" % udashVersion,
+    "io.udash" %%% "udash-rest" % udashVersion,
+    "io.udash" %%% "udash-i18n" % udashVersion,
+    "io.udash" %%% "udash-css" % udashVersion,
+    "io.udash" %%% "udash-auth" % udashVersion,
+  ))
+
+  // Dependencies compiled to JavaScript code
+  val frontendDeps = Def.setting(Seq(
+    "org.scala-js" %%% "scalajs-dom" % "2.2.0"
+  ))
+
+  // JavaScript libraries dependencies
+  // Those will be added into frontend-deps.js
+  val frontendJSDeps = Def.setting(Seq(
+    // "jquery.js" is provided by "udash-jquery" dependency
+    "org.webjars" % "bootstrap" % bootstrapVersion / "js/bootstrap.bundle.js"
+      minified "js/bootstrap.bundle.min.js" dependsOn "jquery.js",
+  ))
+
+  // Dependencies for JVM part of code
+  val backendDeps = Def.setting(Seq(
+    "io.udash" %% "udash-rpc" % udashVersion,
+    "io.udash" %% "udash-rest" % udashVersion,
+    "io.udash" %% "udash-i18n" % udashVersion,
+    "io.udash" %% "udash-css" % udashVersion,
+
+    "org.eclipse.jetty" % "jetty-server" % jettyVersion,
+    "org.eclipse.jetty" % "jetty-rewrite" % jettyVersion,
+    "org.eclipse.jetty.websocket" % "websocket-server" % jettyVersion,
+
+    "com.typesafe" % "config" % typesafeConfigVersion,
+
+    // server logging backend
+    "ch.qos.logback" % "logback-classic" % logbackVersion,
+  ))
+
+  // Test dependencies
+  val crossTestDeps = Def.setting(Seq(
+    "org.scalatest" %%% "scalatest" % scalaTestVersion,
+    "org.scalamock" %%% "scalamock" % scalaMockVersion
+  ).map(_ % Test))
 }

@@ -1,3 +1,4 @@
+
 ThisBuild / tlBaseVersion := "1.6"
 
 ThisBuild / developers := List(tlGitHubDev("kamil-adam", "Kamil Adam"))
@@ -35,7 +36,6 @@ val coreJsSettings = Seq(
   scalaJSLinkerConfig ~= {
     _
       .withModuleKind(ModuleKind.ESModule)
-//      .withModuleSplitStyle(ModuleSplitStyle.SmallModulesFor(List("livechart")))
   },
 
 )
@@ -55,6 +55,29 @@ val core =
     .jsSettings(coreJsSettings)
     .nativeSettings(coreNativeSettings)
 
+val udashDir = "catculator-udash"
+val udashAssetsDir = file(s"$udashDir/.js/target/assets")
+
+lazy val udash =
+  crossProject(JSPlatform)
+    .crossType(CrossType.Pure)
+    .in(file(udashDir))
+    .enablePlugins(ScalaJSPlugin)
+    .dependsOn(core)
+    .settings(
+      mainClass := Some("Main"),
+      scalaJSUseMainModuleInitializer := true,
+
+      libraryDependencies ++= Dependencies.frontendDeps.value,
+
+      // Target files for Scala.js plugin
+      Compile / fastOptJS / artifactPath := udashAssetsDir / "minimal.js",
+      Compile / fullOptJS / artifactPath := udashAssetsDir / "minimal.js",
+      Compile / packageJSDependencies / artifactPath := udashAssetsDir / "minimal-deps.js",
+      Compile / packageMinifiedJSDependencies / artifactPath := udashAssetsDir / "minimal-deps.js",
+    )
+
+
 val rootSettings = Seq(
   name := "catculator",
 )
@@ -70,9 +93,7 @@ addCommandAlias("compileAll", "clean; compile; Test/compile")
 addCommandAlias("testAll", "coreJS/test; coreNative/test")
 addCommandAlias("coverageAll", "coverage; coreJVM/test")
 addCommandAlias("all", "scalafixWTF; scalafmtAll; compileAll; testAll; coverageAll; coverageReport")
-//addCommandAlias("all", "scalafmtAll; compileAll; testAll; coverageAll; coverageReport")
-//addCommandAlias("all", "scalafmtAll; compileAll; testAll")
-//coverageReport
+addCommandAlias("udashAll", "udashJS/compile; udashJS/fastOptJS; udashJS/run")
 
 // sbt scalafixAll && scalafmtWTF && sbt compileAll && sbt testAll && sbt coverageAll && sbt coverageReport
 // sbt scalafixAll && scalafmtAll && sbt compileAll && sbt testAll && sbt coverageAll && sbt coverageReport
