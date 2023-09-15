@@ -1,14 +1,17 @@
 package pl.writeonly.catculator.core.adt.calculus
 
-import pl.writeonly.catculator.core.adt.tree._
+import pl.writeonly.catculator.core.adt.tree.*
 
 object Combinator {
 
-  def generateT(tree: Tree[Combinator]): String = tree match {
+  type CombinatorT = Tree[Combinator]
+  type CombinatorBT = BinaryTree[Combinator]
+
+  def generateT(tree: CombinatorT): String = tree match {
     case Tree.Leaf(a) => generateC(a)
     case Tree.Node(a) => s"(${a.map(generateT).toList.mkString(" ")})"
   }
-  def generateBT(tree: BinaryTree[Combinator]): String = tree match {
+  def generateBT(tree: CombinatorBT): String = tree match {
     case BinaryTree.Leaf(a)    => generateC(a)
     case BinaryTree.Node(a, b) => s"`${generateBT(a)} ${generateBT(b)}"
   }

@@ -1,11 +1,11 @@
 package pl.writeonly.catculator.core.adt.calculus
 
 import pl.writeonly.catculator.core.TableDrivenPropertySpec
-import pl.writeonly.catculator.core.adt.calculus.Combinator._
+import pl.writeonly.catculator.core.adt.calculus.Combinator.*
 
 class CombinatorSpec extends TableDrivenPropertySpec {
   it should "generate code for BinaryTree of Combinators" in {
-    import pl.writeonly.catculator.core.adt.tree.BinaryTree._
+    import pl.writeonly.catculator.core.adt.tree.BinaryTree.*
     val combinators = Table(
       ("ast", "code"),
       (Leaf(I), "I"),
@@ -17,7 +17,7 @@ class CombinatorSpec extends TableDrivenPropertySpec {
   }
 
   it should "generate code for Tree of Combinators" in {
-    import pl.writeonly.catculator.core.adt.tree.Tree._
+    import pl.writeonly.catculator.core.adt.tree.Tree.*
     val combinators = Table(
       ("ast", "code"),
       (Leaf(I), "I"),

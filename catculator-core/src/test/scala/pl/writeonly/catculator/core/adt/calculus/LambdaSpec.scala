@@ -2,10 +2,10 @@ package pl.writeonly.catculator.core.adt.calculus
 
 import org.scalatest.prop.TableFor3
 import pl.writeonly.catculator.core.TableDrivenPropertySpec
-import pl.writeonly.catculator.core.adt.calculus.Lambda._
+import pl.writeonly.catculator.core.adt.calculus.Lambda.*
 import pl.writeonly.catculator.core.parsers.LambdaParser
 import pl.writeonly.catculator.core.reducer.AbstractionReducer.reduceAbstraction
-import pl.writeonly.catculator.core.reducer.SugarReducer.reduceSugar
+import pl.writeonly.catculator.core.reducer.SugarReducer.*
 
 class LambdaSpec extends TableDrivenPropertySpec {
 
@@ -64,7 +64,7 @@ class LambdaSpec extends TableDrivenPropertySpec {
     forAll(basicLambda) { (lambda, _, combinators) =>
       LambdaParser
         .parse(lambda)
-        .map(reduceSugar)
+        .map(lambdaSugarReducer.reduceSugar)
         .map(reduceAbstraction)
         .map(generate)
         .value shouldBe combinators
@@ -79,8 +79,11 @@ class LambdaSpec extends TableDrivenPropertySpec {
 
   it should "desugar advanced Lambda" in {
     forAll(advancedLambda) { (lambda, desugared, _) =>
-      LambdaParser.parse(lambda).map(reduceSugar).map(generate).value shouldBe
-        desugared
+      LambdaParser
+        .parse(lambda)
+        .map(lambdaSugarReducer.reduceSugar)
+        .map(generate)
+        .value shouldBe desugared
     }
   }
 
@@ -88,7 +91,7 @@ class LambdaSpec extends TableDrivenPropertySpec {
     forAll(advancedLambda) { (sugar, _, combinators) =>
       LambdaParser
         .parse(sugar)
-        .map(reduceSugar)
+        .map(lambdaSugarReducer.reduceSugar)
         .map(reduceAbstraction)
         .map(generate)
         .value shouldBe combinators
