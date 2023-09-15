@@ -1,15 +1,15 @@
 package pl.writeonly.catculator.core.parsers
 
 import cats.parse.Numbers.digits
-import cats.parse.Parser0
-import cats.parse.strings.Json.delimited.{parser => jsonString}
+import cats.parse.strings.Json.delimited.parser as jsonString
 import cats.parse.{Parser => P}
-import cats.syntax.all._
+import cats.parse.{Parser0 => P0}
+import cats.syntax.all.*
 import pl.writeonly.catculator.core.adt.calculus
-import pl.writeonly.catculator.core.adt.calculus.Lambda
-import pl.writeonly.catculator.core.adt.calculus.Lambda._
-import pl.writeonly.catculator.core.adt.calculus.Sign
-import pl.writeonly.catculator.core.adt.calculus.Sign._
+import pl.writeonly.catculator.core.adt.calculus.Lambda.*
+import pl.writeonly.catculator.core.adt.calculus.Sign.*
+import pl.writeonly.catculator.core.adt.calculus.*
+import pl.writeonly.catculator.core.parsers.ParserUtil.*
 
 object LambdaParser {
   private val identifierStart: P[Char] = P.charWhere { c =>
@@ -18,12 +18,6 @@ object LambdaParser {
   private val identifierContinue: P[Char] = P.charWhere { c =>
     c.isLetterOrDigit || c === '_'
   }
-
-  private val whitespace: P[Char] = P.charWhere(Character.isWhitespace)
-  private val whitespaces: Parser0[String] = whitespace.rep0.string
-
-  def symbol[A](a: P[A]): P[A] = a <* whitespaces
-  def charSymbol(c: Char): P[Unit] = symbol(P.char(c))
 
   val identifier: P[String] =
     symbol((identifierStart ~ identifierContinue.rep0).string)

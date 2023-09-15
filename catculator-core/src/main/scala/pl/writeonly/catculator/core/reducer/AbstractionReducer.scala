@@ -1,9 +1,9 @@
 package pl.writeonly.catculator.core.reducer
 
 import pl.writeonly.catculator.core.Extras.ifElse
-import pl.writeonly.catculator.core.adt.calculus.Combinator._
+import pl.writeonly.catculator.core.adt.calculus.Combinator.*
 import pl.writeonly.catculator.core.adt.calculus.Lambda
-import pl.writeonly.catculator.core.adt.calculus.Lambda._
+import pl.writeonly.catculator.core.adt.calculus.Lambda.*
 import spire.implicits.eqOps
 
 object AbstractionReducer {
