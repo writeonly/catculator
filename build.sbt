@@ -55,26 +55,22 @@ val core =
     .jsSettings(coreJsSettings)
     .nativeSettings(coreNativeSettings)
 
-val udashDir = "catculator-udash"
-val udashAssetsDir = file(s"$udashDir/.js/target/assets")
-
 lazy val udash =
   crossProject(JSPlatform)
+    .withoutSuffixFor(JSPlatform)
     .crossType(CrossType.Pure)
-    .in(file(udashDir))
-    .enablePlugins(ScalaJSPlugin)
+    .in(file("catculator-udash"))
+    .enablePlugins(
+      ScalaJSPlugin,
+      JSDependenciesPlugin,
+    )
     .dependsOn(core)
     .settings(
-      mainClass := Some("Main"),
+      mainClass := Some("pl.writeonly.catculus.udash.Main"),
       scalaJSUseMainModuleInitializer := true,
 
-      libraryDependencies ++= Dependencies.frontendDeps.value,
-
-      // Target files for Scala.js plugin
-      Compile / fastOptJS / artifactPath := udashAssetsDir / "minimal.js",
-      Compile / fullOptJS / artifactPath := udashAssetsDir / "minimal.js",
-      Compile / packageJSDependencies / artifactPath := udashAssetsDir / "minimal-deps.js",
-      Compile / packageMinifiedJSDependencies / artifactPath := udashAssetsDir / "minimal-deps.js",
+      libraryDependencies ++= Dependencies.uDashDeps.value,
+      jsDependencies ++= Dependencies.uDashJSDeps.value,
     )
 
 
@@ -89,11 +85,11 @@ val root =
 
 addCommandAlias("scalafixWTF", "scalafixEnable; scalafixAll")
 addCommandAlias("scalafmtWTF", "scalafmtSbt; scalafmtAll")
-addCommandAlias("compileAll", "clean; compile; Test/compile")
-addCommandAlias("testAll", "coreJS/test; coreNative/test")
-addCommandAlias("coverageAll", "coverage; coreJVM/test")
-addCommandAlias("all", "scalafixWTF; scalafmtAll; compileAll; testAll; coverageAll; coverageReport")
-addCommandAlias("udashAll", "udashJS/compile; udashJS/fastOptJS; udashJS/run")
+addCommandAlias("compileAll", "clean; compile; Test/compile; test")
+addCommandAlias("coreAll", "scalafixWTF; scalafmtAll; compileAll; doc")
 
-// sbt scalafixAll && scalafmtWTF && sbt compileAll && sbt testAll && sbt coverageAll && sbt coverageReport
-// sbt scalafixAll && scalafmtAll && sbt compileAll && sbt testAll && sbt coverageAll && sbt coverageReport
+addCommandAlias("udashAll", "udash/fastOptJS; udash/fullOptJS")
+addCommandAlias("coverageAll", "coverage; coreJVM/test; coverageReport")
+addCommandAlias("pageAll", "udashAll; coverageAll")
+
+addCommandAlias("all", "coreAll; pageAll")
