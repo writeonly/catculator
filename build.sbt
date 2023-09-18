@@ -60,6 +60,7 @@ val udashAssetsDir = file(s"$udashDir/.js/target/assets")
 
 lazy val udash =
   crossProject(JSPlatform)
+    .withoutSuffixFor(JSPlatform)
     .crossType(CrossType.Pure)
     .in(file(udashDir))
     .enablePlugins(ScalaJSPlugin, JSDependenciesPlugin)
