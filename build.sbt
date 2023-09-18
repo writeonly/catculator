@@ -91,13 +91,11 @@ val root =
 
 addCommandAlias("scalafixWTF", "scalafixEnable; scalafixAll")
 addCommandAlias("scalafmtWTF", "scalafmtSbt; scalafmtAll")
-addCommandAlias("compileAll", "clean; compile; Test/compile; test")
+addCommandAlias("compileAll", "clean; compile; Test/compile; test; doc")
 addCommandAlias("coreAll", "scalafixWTF; scalafmtAll; compileAll")
 
-addCommandAlias("udashFast", "udashJS/compile; udashJS/fastOptJS; udashJS/run")
-addCommandAlias("udashFull", "udashJS/compile; udashJS/fullOptJS; udashJS/run")
 addCommandAlias("udashAll", "udashJS/fastOptJS; udashJS/fullOptJS")
-addCommandAlias("coverageAll", "coverage; coreJVM/test; coverageReport; doc")
+addCommandAlias("coverageAll", "coverage; coreJVM/test; coverageReport")
 addCommandAlias("pageAll", "udashAll; coverageAll")
 
 addCommandAlias("all", "coreAll; pageAll")
