@@ -76,7 +76,7 @@ object Dependencies {
   ))
 
   val uDashJSDeps = Def.setting(Seq(
-    "org.webjars" % "jquery" % "3.7.1" / "jquery.js" minified "jquery.min.js",
     "org.webjars" % "bootstrap" % "5.3.2" / "js/bootstrap.bundle.js" minified "js/bootstrap.bundle.min.js" dependsOn "jquery.js",
+    "org.webjars" % "jquery" % "3.7.1" / "jquery.js" minified "jquery.min.js",
   ))
 }
