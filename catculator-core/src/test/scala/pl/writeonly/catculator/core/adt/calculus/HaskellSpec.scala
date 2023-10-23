@@ -5,6 +5,7 @@ import org.scalatest.prop.*
 import pl.writeonly.catculator.core.LambdaConfig.*
 import pl.writeonly.catculator.core.TableDrivenPropertySpec
 import pl.writeonly.catculator.core.adt.calculus.Lambda.*
+import pl.writeonly.catculator.core.generators.HaskellGenerator
 import pl.writeonly.catculator.core.parsers.HaskellParser
 import pl.writeonly.catculator.core.reducer.AbstractionReducer.reduceAbstraction
 import pl.writeonly.catculator.core.reducer.FunctionReducer
@@ -43,6 +44,11 @@ class HaskellSpec extends TableDrivenPropertySpec {
   val HelloWorld5: String = """
       |const = \ a b -> a
       |main = (const const)
+      |""".stripMargin
+
+  val Fix: String = """
+      |fix = \ f -> let x = f x in x
+      |main = \ -> input
       |""".stripMargin
 
   val Empty: String = """
@@ -120,6 +126,8 @@ class HaskellSpec extends TableDrivenPropertySpec {
     ("main = \"Hello Wolrd!\"", "\"Hello Wolrd!\""),
     ("main = \\ input -> input", "\\input (input)"),
     ("main = \\ input -> \"Hello Wolrd!\"", "\\input (\"Hello Wolrd!\")"),
+    ("main = \\ -> let x = 0 in x", "(let x = 0 in x)"),
+    ("main = \\ f -> let x = (f x) in x", "\\f (let x = (f x) in x)"),
   )
 
   val helloWorldFunctions: TableFor2[String, String] = Table(
@@ -146,7 +154,7 @@ class HaskellSpec extends TableDrivenPropertySpec {
       HaskellParser
         .parseFunction(function)
         .map(_.lambda)
-        .map(generate)
+        .map(HaskellGenerator.generate)
         .value shouldBe lambda
     }
   }
@@ -158,7 +166,7 @@ class HaskellSpec extends TableDrivenPropertySpec {
         .map { xs =>
           haskellFunctionReducer.reduceFunctions(xs.toList)
         }
-        .map(generate)
+        .map(HaskellGenerator.generate)
         .value shouldBe lambda
     }
   }

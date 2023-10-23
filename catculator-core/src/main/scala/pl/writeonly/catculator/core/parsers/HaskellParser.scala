@@ -24,7 +24,8 @@ object HaskellParser {
 
   // format: off
   private val lambda: P[Lambda] = P.defer(
-        variable
+        let
+      | variable
       | natNum
       | charStr
       | char
@@ -39,6 +40,13 @@ object HaskellParser {
 
   private val application: P[Lambda] = charSymbol('(') *> application0 <*
     charHorizontalSymbol(')')
+
+  private val let: P[Lambda] =
+    (
+      stringSymbol("let") *>
+        ((identifier <* stringSymbol("=")) ~ lambda) ~
+        (stringSymbol("in") *> lambda)
+    ).map(let1)
 
   private val abstraction0 = charSymbol('\\') *> identifier.rep0 <*
     stringSymbol("->")

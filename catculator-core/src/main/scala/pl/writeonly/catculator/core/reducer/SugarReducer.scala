@@ -24,8 +24,10 @@ class SugarReducer(config: LambdaConfig) {
     case Abs(p, b)  => Abs(p, reduceSugar(b))
     case App(f, g)  => App(reduceSugar(f), reduceSugar(g))
 
+    case Let(n, e, b)    => config.wrapAppThrush(e, n)(b)
     case MultiAbs(ps, b) => reduceAbss(ps, reduceSugar(b))
     case MultiApp(fs)    => reduceApps(fs.map(reduceSugar))
+    case MultiLet(ps, b) => reduceSugar(reduceLets(ps, b))
     case LocalScope(fs)  => reduceApps(fs.map(reduceSugar))
     case NilList(xs)     => reduceNilList(xs.map(reduceSugar))
     case CharStr(s)      => reduceCharStr(s)
@@ -38,6 +40,10 @@ class SugarReducer(config: LambdaConfig) {
 
   private def reduceApps(l: NonEmptyList[Lambda]): Lambda =
     foldNonEmpty(l)(App.apply)
+
+  def reduceLets(ps: NonEmptyList[(String, Lambda)], body: Lambda) = MultiApp(
+    NonEmptyList(MultiAbs(ps.map(_._1).toList, body), ps.map(_._2).toList),
+  )
 
   private def reduceNilList(xs: List[Lambda]): Lambda = xs
     .foldRight(config.nilVariable)(config.wrapAppVireoApp)
