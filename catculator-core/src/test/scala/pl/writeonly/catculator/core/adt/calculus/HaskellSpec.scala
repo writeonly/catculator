@@ -188,4 +188,23 @@ class HaskellSpec extends TableDrivenPropertySpec {
       assert(combinatorsEither.isRight, s"$combinatorsEither")
     }
   }
+
+  it should "parseFunctions programs and save combinators 2" in {
+    forAll(programs) { (function, i, o) =>
+
+      val parsedLambda = HaskellParser
+        .parseFunctions(function)
+        .map { xs =>
+          haskellFunctionReducer.reduceFunctions(xs.toList)
+        }
+        .map(haskellConfig.addApply)
+        .map(haskellSugarReducer.reduceSugar)
+        .map(reduceAbstraction)
+        .value
+
+      val combinatorsEither = parsedLambda |> toCombinatorBT
+//      combinatorsEither.value
+      assert(combinatorsEither.isRight, s"$combinatorsEither")
+    }
+  }
 }
