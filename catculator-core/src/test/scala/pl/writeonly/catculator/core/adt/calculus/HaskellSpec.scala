@@ -5,6 +5,8 @@ import org.scalatest.prop.*
 import pl.writeonly.catculator.core.LambdaConfig.*
 import pl.writeonly.catculator.core.TableDrivenPropertySpec
 import pl.writeonly.catculator.core.adt.calculus.Lambda.*
+import pl.writeonly.catculator.core.calculators.lazyk.ADT.fromCombinatorBT
+import pl.writeonly.catculator.core.calculators.lazyk.Evaluator
 import pl.writeonly.catculator.core.generators.HaskellGenerator
 import pl.writeonly.catculator.core.parsers.HaskellParser
 import pl.writeonly.catculator.core.reducer.AbstractionReducer.reduceAbstraction
@@ -203,7 +205,10 @@ class HaskellSpec extends TableDrivenPropertySpec {
         .value
 
       val combinatorsEither = parsedLambda |> toCombinatorBT
-//      combinatorsEither.value
+      val aaa = fromCombinatorBT(combinatorsEither.value)
+
+      Evaluator.evalCombinator(aaa, i)
+
       assert(combinatorsEither.isRight, s"$combinatorsEither")
     }
   }
